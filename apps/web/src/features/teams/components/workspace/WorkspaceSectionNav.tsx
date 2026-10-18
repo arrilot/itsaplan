@@ -7,6 +7,7 @@ import { ChevronRight, Settings } from 'lucide-react';
 import type { WorkspaceSummary } from '@/lib/api/endpoints/workspaces';
 import { cn } from '@/lib/utils';
 import { workspacePath } from '@/utils/paths';
+import { titlePath, useDocumentTitle } from '@/hooks/useDocumentTitle';
 import { useWorkspaceSettingsSections } from '../../hooks/useWorkspaceSettingsSections';
 import type { WorkspaceSectionGroup } from '../../types/workspaceSection';
 import {
@@ -36,7 +37,12 @@ export default function WorkspaceSectionNav({ workspace }: { workspace: Workspac
       }));
   const overview = items('overview');
   const settings = items('settings');
-  const activeId = [...overview, ...settings].find((entry) => entry.href === pathname)?.id ?? null;
+  const entries = [...overview, ...settings];
+  const active = entries.find((entry) => entry.href === pathname);
+  const activeId = active?.id ?? null;
+  // The workspace's own path opens the first entry of the menu.
+  const shown = active ?? (pathname === workspacePath(workspace.id) ? entries[0] : undefined);
+  useDocumentTitle(titlePath(workspace.name, shown?.label));
   // Null until the user opens or closes the group themselves; until then it follows
   // whichever section is open.
   const [toggled, setToggled] = useState<boolean | null>(null);

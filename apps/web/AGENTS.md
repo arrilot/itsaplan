@@ -123,6 +123,12 @@ next-intl, language from the `NEXT_LOCALE` cookie — no `[locale]` route segmen
 
 - Prefer Server Components and server-side data fetching; reach for client components only for
   interactivity/hooks.
+- **A screen names itself in the browser tab with `useDocumentTitle`.** The shell names the
+  section (`useShellTitle`), a detail page its entity, and an issue side panel its issue over
+  both; `titlePath(...)` builds `Project › Section` and gives null while a part is missing. An
+  entity read that failed passes null, so the tab never names what the screen cannot show.
+  A server-rendered page renders `components/common/DocumentTitle`. Never set `metadata.title`
+  per route: the hook owns `document.title`.
 - A screen that has to stay live calls `useLiveRefresh({ scope, targets })` with a scope from
   `@/utils/revScopes` — never its own polling. `SyncProvider` polls every registered scope in one
   request and invalidates the targets of the ones that moved.
